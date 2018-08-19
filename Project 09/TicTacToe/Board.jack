@@ -139,25 +139,36 @@ class Board {
 
     /**
      *  Method sets/renders the shape(X or O) derived from the given player at the current cursor position in the board
+     *  Returns 1 if the move has resulted in the player's victory, 0 if the move has resulted in a draw, 2 if the game
+     *  hasn't completed
     */
-    method void setMove(Player player) {
+    method int setMove(Player player) {
         var Shape shape;
+        var int shapeVal;
 
-        let shape = player.getShape();
+        let shape = do player.getShape();
+        let shapeVal = do shape.getValue();
+       
+        gridState.setCharAt(cursor, shapeVal);
 
-        shape.renderAt(5,5);
+        var int row;
+        var int col;
 
-        return;
-    }
+        let row = 0;
+        let col = 0;
 
+        // 012345678
+        var int pos;
+        let pos = 0;
+        while(row <= gridSize) {
+            while(col <= gridSize) {
+                pos = row + col;
+                col = col + 1;
+            }
+            row = row + 1;
+        }
 
-    /**
-     *  Method returns true if one of the players has won
-    */
-    method boolean checkVictory() {
-
-        return;
-
+        return 2;
     }
 
 

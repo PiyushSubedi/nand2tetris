@@ -3,7 +3,10 @@
 
 class Shape {
 
-    constructor Shape new() {
+    field int value;
+
+    constructor Shape new(int value) {
+        this.value = value;
         return this;
     }
 
@@ -11,6 +14,9 @@ class Shape {
         return;
     }
 
+    method void getValue() {
+        return value;
+    }
 
     function Shape getShape1() {
         return Shape.new();

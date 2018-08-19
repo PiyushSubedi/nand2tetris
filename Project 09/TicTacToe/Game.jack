@@ -77,15 +77,20 @@ class Game {
             while (~(key = 0)) {
                 let key = Keyboard.keyPressed();
                 if(movePlayed) {
-                    var boolean won;
-                    let won = do board.setMove(currentPlayer);
+                    var int state;
+                    let state = do board.setMove(currentPlayer);
 
-                    if(won) {
-                        Output.printString(currentPlayer.getName() + " has won!!");
-                        exit = true;
-                    } else {
+                    if(state = 2) {
                         do switchPlayer();  // switch player after a move is made
+                    else {
+                        if(state = 1) {
+                            Output.printString(currentPlayer.getName() + " has won!!");
+                        } else {
+                            Output.printString("Bohoo! The game has drawn!!");
+                        }
+                        exit = true;
                     }
+
                 } else {
                     do moveCursor();
                 }
@@ -124,6 +129,9 @@ class Game {
         return;
     }
 
+    /**
+     * Disposes the Game object
+    */
     method void dispose() {
         do board.dispose();
         do Memory.deAlloc(this);
