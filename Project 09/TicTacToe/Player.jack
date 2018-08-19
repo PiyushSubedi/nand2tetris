@@ -1,0 +1,47 @@
+
+
+
+class Player {
+
+    field String name;
+
+    field Shape shape;
+
+    constructor Player new(String name, Shape shape) {
+        this.name = name;
+        this.shape = shape;
+
+        return this;
+    }
+
+
+    method String getName() {
+        return name;
+    }
+
+    method Shape getShape() {
+        return shape;
+    }
+
+
+
+    function Player getPlayer1(String name) {
+        return Player.new(name, Shape.getShape1());
+    }
+
+
+    function Player getPlayer2(String name) {
+        return Player.new(name, Shape.getShape2());
+    }
+
+    
+
+
+    method void dispose() {
+        do name.dispose();
+        do shape.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+}

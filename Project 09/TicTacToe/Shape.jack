@@ -1,0 +1,28 @@
+
+
+
+class Shape {
+
+    constructor Shape new() {
+        return this;
+    }
+
+    method void renderAt(int x, int y) {
+        return;
+    }
+
+
+    function Shape getShape1() {
+        return Shape.new();
+    }
+
+    function Shape getShape2() {
+        return Shape.new();
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+}

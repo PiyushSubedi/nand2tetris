@@ -1,0 +1,133 @@
+/**
+ * The engine of the TicTacToe game that runs the game.
+ * This is a simple recreation of the classic TicTacToe game.
+ * It is a multiplayer game where player makes their moves by simply presssing enter
+ * Navigation through the board is done using the left, right, top and down arrow keys
+ * The 'q' key is used to quit the game.
+*/
+
+/* TODO : Reset support, Bot mode, Animation for victory */
+
+class Game {
+
+    field Board board;  // game board instance
+
+    field int direction; // the square's current direction: 
+                        // 0=none, 1=up, 2=down, 3=left, 4=right
+
+    field Player player1;   // holds Player1's info/state
+
+    field Player player2;   // holds Player2's info/state
+
+    field Player currentPlayer; // holds the instance of the player who is to make a move
+
+
+    /**
+     *  Constructs new board and players
+    */
+    constructor Game new() {
+
+        let board = Board.new(200, 125); // creates a board at round about center of the screen
+
+        /* MUST DO : ask user for names of player 1 and player 2*/
+        let player1 = Player.getPlayer1("John");
+        let player2 = Player.getPlayer2("Elena");
+
+        // player1 is always the first player (make random ?)
+        let currentPlayer = player1;
+
+        let direction = 0;  // initial state is no movement
+
+        return this;
+    }
+
+    /**
+     *  Runs the game
+     *  Intercepts user input and makes changes in the board accordingly
+    */
+    method void run() {
+
+        var char key;  // the key currently pressed by the user
+        var boolean exit;
+        var boolean movePlayed;
+
+        let exit = false;
+
+        while (~exit) {
+        
+            let direction = 0;
+            let movePlayed = false;
+
+            // waits for a key to be pressed
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+                do moveCursor();
+            }
+            if (key = 81)  { let exit = true; }     // q key
+            if (key = 131) { let direction = 1; }   // up arrow
+            if (key = 133) { let direction = 2; }   // down arrow
+            if (key = 130) { let direction = 3; }   // left arrow
+            if (key = 132) { let direction = 4; }   // right arrow
+            if (key = 13) {
+                // enter key
+                movePlayed = true;
+            } 
+
+            // waits for the key to be released
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+                if(movePlayed) {
+                    var boolean won;
+                    let won = do board.setMove(currentPlayer);
+
+                    if(won) {
+                        Output.printString(currentPlayer.getName() + " has won!!");
+                        exit = true;
+                    } else {
+                        do switchPlayer();  // switch player after a move is made
+                    }
+                } else {
+                    do moveCursor();
+                }
+            }
+        }
+
+        return;
+    }
+
+
+    /**
+     *  Method switches the current player
+     *  Ex : If the current player is Player1, this method sets it Player2 as the current player
+    */
+    method void switchPlayer() {
+        if(currentPlayer = player1) {
+            let currentPlayer = player2;
+        } else {
+            let currentPlayer = player1;
+        }
+
+        return;
+    }
+
+
+
+    /**
+     * Moves the cursor in the current direction
+    */
+    method void moveCursor() {
+        if (direction = 1) { do board.moveUp(); }
+        if (direction = 2) { do board.moveDown(); }
+        if (direction = 3) { do board.moveLeft(); }
+        if (direction = 4) { do board.moveRight(); }
+        do Sys.wait(5);  // delays the next movement
+        return;
+    }
+
+    method void dispose() {
+        do board.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+}

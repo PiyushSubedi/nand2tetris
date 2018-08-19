@@ -1,0 +1,173 @@
+/**
+ *  Class represents a standard 3 X 3 TIC-TAC-TOE board
+*/
+
+class Board {
+
+    field String gridState; // used internally to maintain the board state in terms of grid
+
+    field int gridSize; // holds the board size , Default is 3
+
+    field int totalCells; // holds the total number of cells/boxes in the grid, it is basically gridSize * gridSize
+
+    field int cursor;   // holds the cell position of the cursor
+
+
+    
+    /**
+     *  Method constructs a new Board for the game at the given location
+    */
+    constructor Board new(int x, int y) {
+        let gridSize = 3;   // 3 X 3 board
+        let totalCells = gridSize * gridSize;   // total number of cells in the grid
+        let cursor = 0; // initial position of the cursor is the first cell
+        
+        do resetGrid();
+        do renderBoardAt(x, y);
+
+        return this;
+    }
+
+    /**
+     *  Method resets/clears the internal grid state
+    */
+    method void resetGrid() {
+        var int counter;
+        var int gridLastPos;
+
+        let counter = 0;
+
+        let gridState = String.new(gridLastPos);
+        while(counter < totalCells) {
+            gridState.setCharAt(counter, '-');
+            counter = counter + 1;
+        }
+        return;
+    }
+
+
+    /**
+     *  Method to display the board in the screen at the given location
+    */
+    method void renderBoardAt(int x, int y) {
+
+        return;
+    }
+
+    /**
+     *  Method moves the cursor to the left by one grid cell
+     *  If the cursor is already at one of the leftmost cells,
+     *  the cursor is moved back by above one grid cell
+     *
+     *  If the cursor is at the first grid cell, this method moves it to
+     *  the last grid position
+    */
+    method void moveCursorLeft() {
+        if(cursor = 0) {
+            let cursor = totalCells - 1; // last grid position
+        } else {
+            let cursor = cursor - 1;
+        }
+
+        do renderCursor();
+        return;
+    }
+
+
+    /**
+     *  Method moves the cursor to the right by one grid cell
+     *  If the cursor is already at one of the rightmost cells,
+     *  the cursor is moved down by one grid cell
+     *
+     *  If the cursor is at the last grid cell, this method moves it to
+     *  the first grid position
+    */
+    method void moveCursorRight() {
+        if(cursor = totalCells - 1) {
+            let cursor = 0; // first grid position
+        } else {
+            let cursor = cursor + 1;
+        }
+
+        do renderCursor();
+        return;
+    }
+
+
+    /**
+     *  Method moves the cursor up by one grid cell
+     *  If the cursor is already at one of the topmost cells,
+     *  the cursor is moved to the downmost grid cell in the same column
+    */
+    method void moveCursorUp() {
+        if( (cursor - gridSize) <= 0) {
+            let cursor = totalCells - gridSize + cursor; // downmost grid position
+        } else {
+            let cursor = cursor - gridSize;
+        }
+
+        do renderCursor();
+        return;
+    }
+
+
+    /**
+     *  Method moves the cursor down by one grid cell
+     *  If the cursor is already at one of the downmost cells,
+     *  the cursor is moved to the topmost grid cell in the same column
+    */
+    method void moveCursorDown() {
+        if( (cursor + gridSize) >= totalCells) {
+            let cursor = totalCells - gridSize - cursor; // topmost grid position
+        } else {
+            let cursor = cursor + gridSize;
+        }
+
+        do renderCursor();
+        return;
+    }
+
+
+    /**
+     *  Method displays the cursor in the screen at the current cursor position
+     *  The cursor is a box as of now
+     *
+    */
+    method void renderCursor() {     
+        return;
+    }
+
+    /**
+     *  Method sets/renders the shape(X or O) derived from the given player at the current cursor position in the board
+    */
+    method void setMove(Player player) {
+        var Shape shape;
+
+        let shape = player.getShape();
+
+        shape.renderAt(5,5);
+
+        return;
+    }
+
+
+    /**
+     *  Method returns true if one of the players has won
+    */
+    method boolean checkVictory() {
+
+        return;
+
+    }
+
+
+    /**
+     *  Method disposes the board
+    */
+    method void dispose() {
+        do gridState.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+}
