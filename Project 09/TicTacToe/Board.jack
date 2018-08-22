@@ -46,7 +46,7 @@ class Board {
 
         let gridState = String.new(totalCells);
         while(counter < totalCells) {
-            let gridState = gridState.appendChar("-");
+            let gridState = gridState.appendChar(45);
             //do gridState.setCharAt(counter, "-");
             let counter = counter + 1;
         }
@@ -219,10 +219,10 @@ class Board {
     method void moveCursorUp() {
         var int posWhenUp;
         let posWhenUp = cursor - gridSize;
-        if(posWhenUp > 0) {
-            let cursor = posWhenUp;
-        } else {
+        if(posWhenUp < 0) {
             let cursor = totalCells - gridSize + cursor; // downmost grid position
+        } else {
+            let cursor = posWhenUp;
         }
 
         do renderCursor();
@@ -241,7 +241,7 @@ class Board {
         if(posWhenDown < totalCells) {
             let cursor = posWhenDown;
         } else {
-            let cursor = totalCells - gridSize - cursor; // topmost grid position
+            let cursor = cursor - (totalCells - gridSize); // topmost grid position
         }
 
         do renderCursor();
@@ -327,7 +327,7 @@ class Board {
         var char valueAtCurrentPosition;
 
         let valueAtCurrentPosition = gridState.charAt(cursor);
-        let isValid = ~(valueAtCurrentPosition = 121);  // - is 121 in ASCII
+        let isValid = ~(valueAtCurrentPosition = 45);  // - is 121 in ASCII
 
         return isValid;
     }

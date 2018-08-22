@@ -142,15 +142,15 @@ class GameScreen {
         var int posX, posY;
 
         do Output.printInt(pos);
-        do Output.printChar("-");
+        do Output.printChar(45);
 
         do clearCursor();
 
         let posY = pos/gridSize;
         let posX = pos - (gridSize*posY); //  = pos % 3
 
-        let x1 = xStart - cursorPadding - cursorLength + (posX * (cursorLength + 2*cursorPadding));
-        let y1 = yStart + cursorPadding + (posY * (cursorLength + 2*cursorPadding));
+        let x1 = xStart - cursorPadding - cursorLength + (posX * (cursorLength + (2*cursorPadding)));
+        let y1 = yStart + cursorPadding + (posY * (cursorLength + (2*cursorPadding)));
 
         let x2 = x1 + cursorLength;
         let y2 = y1 + cursorLength;

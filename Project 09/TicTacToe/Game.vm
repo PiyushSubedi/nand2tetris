@@ -60,6 +60,9 @@ not
 if-goto WHILE_END1
 call Keyboard.keyPressed 0
 pop local 0
+push pointer 0
+call Game.moveCursor 1
+pop temp 0
 goto WHILE_EXP1
 label WHILE_END1
 push local 0
@@ -176,7 +179,6 @@ push this 0
 call Board.isFull 1
 pop local 1
 push local 1
-not
 if-goto IF_TRUE9
 goto IF_FALSE9
 label IF_TRUE9
@@ -261,8 +263,8 @@ label IF_END8
 label IF_FALSE7
 goto IF_END6
 label IF_FALSE6
-push constant 50
-call Sys.wait 1
+push pointer 0
+call Game.moveCursor 1
 pop temp 0
 label IF_END6
 label WHILE_EXP2
@@ -341,6 +343,9 @@ push this 0
 call Board.moveCursorRight 1
 pop temp 0
 label IF_FALSE3
+push constant 5
+call Sys.wait 1
+pop temp 0
 push constant 0
 return
 function Game.dispose 0

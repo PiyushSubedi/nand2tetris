@@ -41,10 +41,7 @@ lt
 not
 if-goto WHILE_END0
 push this 0
-push constant 1
-call String.new 1
 push constant 45
-call String.appendChar 2
 call String.appendChar 2
 pop this 0
 push local 0
@@ -642,19 +639,19 @@ sub
 pop local 0
 push local 0
 push constant 0
-gt
+lt
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
-push local 0
-pop this 3
-goto IF_END0
-label IF_FALSE0
 push this 2
 push this 1
 sub
 push this 3
 add
+pop this 3
+goto IF_END0
+label IF_FALSE0
+push local 0
 pop this 3
 label IF_END0
 push pointer 0
@@ -679,10 +676,10 @@ push local 0
 pop this 3
 goto IF_END0
 label IF_FALSE0
+push this 3
 push this 2
 push this 1
 sub
-push this 3
 sub
 pop this 3
 label IF_END0
@@ -804,7 +801,7 @@ push this 3
 call String.charAt 2
 pop local 1
 push local 1
-push constant 121
+push constant 45
 eq
 not
 pop local 0

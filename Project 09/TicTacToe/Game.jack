@@ -63,6 +63,7 @@ class Game {
             // waits for a key to be pressed
             while (key = 0) {
                 let key = Keyboard.keyPressed();
+                do moveCursor();
             }
             if (key = 81)  { let exit = true; }     // q key
             if (key = 131) { let direction = 1; }   // up arrow
@@ -72,33 +73,31 @@ class Game {
             if (key = 13) {
                 // enter key
                 let movePlayed = true;
-            } 
+            }
 
-            // waits for the key to be released
-            while (~(key = 0)) {
-                let key = Keyboard.keyPressed();
-                if(movePlayed) {
+            if(movePlayed) {
+                let validMove = board.isMoveValid();
+                if(validMove) {
+                    let won = board.setMove(currentPlayer);
 
-                    let validMove = board.isMoveValid();
-                    if(validMove) {
-                        let won = board.setMove(currentPlayer);
-
-                        if(won) {
-                            do Output.printString(currentPlayer.getName() + " has won!!");
-                            let exit = true;
-                        } else {
-                            do switchPlayer();  // switch player after a move is made
-                            let exit = board.isFull();
-                            if(~exit) {
-                                do Output.printString("Boohoo! The game has ended in a draw");
-                            }
+                    if(won) {
+                        do Output.printString(currentPlayer.getName() + " has won!!");
+                        let exit = true;
+                    } else {
+                        do switchPlayer();  // switch player after a move is made
+                        let exit = board.isFull();
+                        if(exit) {
+                            do Output.printString("Boohoo! The game has ended in a draw");
                         }
                     }
-
-                } else {
-                    do moveCursor();
-                    do Sys.wait(50);  // delays the next movement
                 }
+            } else {
+                do moveCursor();
+            }
+
+            // wait for the key to be released
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
             }
         }
 
@@ -130,6 +129,7 @@ class Game {
         if (direction = 2) { do board.moveCursorDown(); }
         if (direction = 3) { do board.moveCursorLeft(); }
         if (direction = 4) { do board.moveCursorRight(); }
+        do Sys.wait(5);  // delays the next movement
         return;
     }
 
