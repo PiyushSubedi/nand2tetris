@@ -1,0 +1,44 @@
+function Shape.new 0
+push constant 1
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push pointer 0
+return
+function Shape.renderAt 0
+push argument 0
+pop pointer 0
+push constant 0
+return
+function Shape.getValue 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Shape.getShape1 1
+push constant 1
+call String.new 1
+push constant 49
+call String.appendChar 2
+call Shape.new 1
+pop local 0
+push local 0
+return
+function Shape.getShape2 1
+push constant 1
+call String.new 1
+push constant 50
+call String.appendChar 2
+call Shape.new 1
+pop local 0
+push local 0
+return
+function Shape.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

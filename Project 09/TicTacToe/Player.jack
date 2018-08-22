@@ -10,9 +10,9 @@ class Player {
 
     field Shape shape;
 
-    constructor Player new(String name, Shape shape) {
-        this.name = name;
-        this.shape = shape;
+    constructor Player new(String nm, Shape shp) {
+        let name = nm;
+        let shape = shp;
 
         return this;
     }
@@ -29,12 +29,20 @@ class Player {
 
 
     function Player getPlayer1(String name) {
-        return Player.new(name, Shape.getShape1());
+        var Player player;
+        var Shape shape;
+        let shape = Shape.getShape1();
+        let player = Player.new(name, shape);
+        return player;
     }
 
 
     function Player getPlayer2(String name) {
-        return Player.new(name, Shape.getShape2());
+        var Player player;
+        var Shape shape;
+        let shape = Shape.getShape2();
+        let player = Player.new(name, shape);
+        return player;
     }
 
     

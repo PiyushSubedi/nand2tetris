@@ -1,0 +1,832 @@
+function Board.new 0
+push constant 7
+call Memory.alloc 1
+pop pointer 0
+push constant 3
+pop this 1
+push this 1
+push this 1
+call Math.multiply 2
+pop this 2
+push constant 0
+pop this 3
+push constant 0
+pop this 4
+push this 1
+call GameScreen.new 1
+pop this 6
+push pointer 0
+call Board.resetGrid 1
+pop temp 0
+push pointer 0
+call Board.renderBoard 1
+pop temp 0
+push pointer 0
+call Board.renderCursor 1
+pop temp 0
+push pointer 0
+return
+function Board.resetGrid 1
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+push this 2
+call String.new 1
+pop this 0
+label WHILE_EXP0
+push local 0
+push this 2
+lt
+not
+if-goto WHILE_END0
+push this 0
+push constant 1
+call String.new 1
+push constant 45
+call String.appendChar 2
+call String.appendChar 2
+pop this 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Board.renderBoard 0
+push argument 0
+pop pointer 0
+push this 6
+call GameScreen.drawBoard 1
+pop temp 0
+push constant 0
+return
+function Board.setWinningPosibilitiesTable 1
+push argument 0
+pop pointer 0
+push constant 9
+push constant 5
+call Math.multiply 2
+call Array.new 1
+pop this 5
+push constant 4
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 49
+call String.appendChar 2
+push constant 50
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 51
+call String.appendChar 2
+push constant 54
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 52
+call String.appendChar 2
+push constant 56
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 48
+call String.appendChar 2
+push constant 50
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 52
+call String.appendChar 2
+push constant 55
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 48
+call String.appendChar 2
+push constant 50
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 52
+call String.appendChar 2
+push constant 54
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 53
+call String.appendChar 2
+push constant 56
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 48
+call String.appendChar 2
+push constant 54
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 52
+call String.appendChar 2
+push constant 53
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 5
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 48
+call String.appendChar 2
+push constant 56
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 49
+call String.appendChar 2
+push constant 55
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 50
+call String.appendChar 2
+push constant 54
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 51
+call String.appendChar 2
+push constant 53
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 50
+call String.appendChar 2
+push constant 56
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 51
+call String.appendChar 2
+push constant 52
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 5
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 48
+call String.appendChar 2
+push constant 51
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 50
+call String.appendChar 2
+push constant 52
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 55
+call String.appendChar 2
+push constant 56
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 6
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 49
+call String.appendChar 2
+push constant 52
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 54
+call String.appendChar 2
+push constant 56
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 7
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 4
+call Array.new 1
+pop local 0
+push constant 0
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 48
+call String.appendChar 2
+push constant 52
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 50
+call String.appendChar 2
+push constant 53
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push local 0
+add
+push constant 2
+call String.new 1
+push constant 54
+call String.appendChar 2
+push constant 55
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 3
+push local 0
+add
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 8
+push this 5
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+return
+function Board.moveCursorLeft 0
+push argument 0
+pop pointer 0
+push this 3
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 2
+push constant 1
+sub
+pop this 3
+goto IF_END0
+label IF_FALSE0
+push this 3
+push constant 1
+sub
+pop this 3
+label IF_END0
+push pointer 0
+call Board.renderCursor 1
+pop temp 0
+push constant 0
+return
+function Board.moveCursorRight 0
+push argument 0
+pop pointer 0
+push this 3
+push this 2
+push constant 1
+sub
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop this 3
+goto IF_END0
+label IF_FALSE0
+push this 3
+push constant 1
+add
+pop this 3
+label IF_END0
+push pointer 0
+call Board.renderCursor 1
+pop temp 0
+push constant 0
+return
+function Board.moveCursorUp 1
+push argument 0
+pop pointer 0
+push this 3
+push this 1
+sub
+pop local 0
+push local 0
+push constant 0
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 0
+pop this 3
+goto IF_END0
+label IF_FALSE0
+push this 2
+push this 1
+sub
+push this 3
+add
+pop this 3
+label IF_END0
+push pointer 0
+call Board.renderCursor 1
+pop temp 0
+push constant 0
+return
+function Board.moveCursorDown 1
+push argument 0
+pop pointer 0
+push this 3
+push this 1
+add
+pop local 0
+push local 0
+push this 2
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 0
+pop this 3
+goto IF_END0
+label IF_FALSE0
+push this 2
+push this 1
+sub
+push this 3
+sub
+pop this 3
+label IF_END0
+push pointer 0
+call Board.renderCursor 1
+pop temp 0
+push constant 0
+return
+function Board.renderCursor 0
+push argument 0
+pop pointer 0
+push this 6
+push this 3
+call GameScreen.drawCursor 2
+pop temp 0
+push constant 0
+return
+function Board.setMove 3
+push argument 0
+pop pointer 0
+push argument 1
+call Player.getShape 1
+pop local 0
+push local 0
+call Shape.getValue 1
+pop local 1
+push this 0
+push this 3
+push local 1
+call String.setCharAt 3
+pop temp 0
+push this 4
+push constant 1
+add
+pop this 4
+push pointer 0
+push local 1
+call Board.isWinningMove 2
+pop local 2
+push local 2
+return
+function Board.isWinningMove 5
+push argument 0
+pop pointer 0
+push constant 0
+pop local 1
+push this 3
+push this 5
+add
+pop pointer 1
+push that 0
+pop local 0
+label WHILE_EXP0
+push local 1
+push local 0
+add
+pop pointer 1
+push that 0
+push constant 1
+call String.new 1
+push constant 88
+call String.appendChar 2
+eq
+not
+not
+if-goto WHILE_END0
+push local 1
+push local 0
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+push constant 0
+call String.charAt 2
+pop local 3
+push this 0
+push local 3
+call String.charAt 2
+pop local 4
+push local 4
+push argument 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 2
+push constant 1
+call String.charAt 2
+pop local 3
+push this 0
+push local 3
+call String.charAt 2
+pop local 4
+push local 4
+push argument 1
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+return
+label IF_FALSE1
+label IF_FALSE0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Board.isMoveValid 2
+push argument 0
+pop pointer 0
+push this 0
+push this 3
+call String.charAt 2
+pop local 1
+push local 1
+push constant 121
+eq
+not
+pop local 0
+push local 0
+return
+function Board.isFull 0
+push argument 0
+pop pointer 0
+push this 4
+push this 2
+push constant 1
+sub
+eq
+return
+function Board.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call String.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

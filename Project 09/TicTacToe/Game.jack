@@ -50,6 +50,8 @@ class Game {
         var char key;  // the key currently pressed by the user
         var boolean exit;
         var boolean movePlayed;
+        var boolean validMove;
+        var boolean won;
 
         let exit = false;
 
@@ -61,7 +63,6 @@ class Game {
             // waits for a key to be pressed
             while (key = 0) {
                 let key = Keyboard.keyPressed();
-                do moveCursor();
             }
             if (key = 81)  { let exit = true; }     // q key
             if (key = 131) { let direction = 1; }   // up arrow
@@ -70,29 +71,33 @@ class Game {
             if (key = 132) { let direction = 4; }   // right arrow
             if (key = 13) {
                 // enter key
-                movePlayed = true;
+                let movePlayed = true;
             } 
 
             // waits for the key to be released
             while (~(key = 0)) {
                 let key = Keyboard.keyPressed();
                 if(movePlayed) {
-                    var int state;
-                    let state = do board.setMove(currentPlayer);
 
-                    if(state = 2) {
-                        do switchPlayer();  // switch player after a move is made
-                    else {
-                        if(state = 1) {
-                            Output.printString(currentPlayer.getName() + " has won!!");
+                    let validMove = board.isMoveValid();
+                    if(validMove) {
+                        let won = board.setMove(currentPlayer);
+
+                        if(won) {
+                            do Output.printString(currentPlayer.getName() + " has won!!");
+                            let exit = true;
                         } else {
-                            Output.printString("Bohoo! The game has drawn!!");
+                            do switchPlayer();  // switch player after a move is made
+                            let exit = board.isFull();
+                            if(~exit) {
+                                do Output.printString("Boohoo! The game has ended in a draw");
+                            }
                         }
-                        exit = true;
                     }
 
                 } else {
                     do moveCursor();
+                    do Sys.wait(50);  // delays the next movement
                 }
             }
         }
@@ -121,11 +126,10 @@ class Game {
      * Moves the cursor in the current direction
     */
     method void moveCursor() {
-        if (direction = 1) { do board.moveUp(); }
-        if (direction = 2) { do board.moveDown(); }
-        if (direction = 3) { do board.moveLeft(); }
-        if (direction = 4) { do board.moveRight(); }
-        do Sys.wait(5);  // delays the next movement
+        if (direction = 1) { do board.moveCursorUp(); }
+        if (direction = 2) { do board.moveCursorDown(); }
+        if (direction = 3) { do board.moveCursorLeft(); }
+        if (direction = 4) { do board.moveCursorRight(); }
         return;
     }
 
@@ -134,6 +138,9 @@ class Game {
     */
     method void dispose() {
         do board.dispose();
+        do player1.dispose();
+        do player2.dispose();
+        do currentPlayer.dispose();
         do Memory.deAlloc(this);
         return;
     }

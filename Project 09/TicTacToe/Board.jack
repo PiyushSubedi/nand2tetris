@@ -12,8 +12,12 @@ class Board {
 
     field int cursor;   // holds the cell position of the cursor
 
+    field int numberOfMovesMade; // counter variable to hold the number of moves that have been rendered in the board
 
-    
+    field Array winningPosibilities;  // contains combinations for winning when a player makes a move at a certain position in the board
+
+    field GameScreen gameScreen;  // holds an instance of the game screen
+
     /**
      *  Method constructs a new Board for the game at the given location
     */
@@ -21,9 +25,13 @@ class Board {
         let gridSize = 3;   // 3 X 3 board
         let totalCells = gridSize * gridSize;   // total number of cells in the grid
         let cursor = 0; // initial position of the cursor is the first cell
-        
+        let numberOfMovesMade = 0;
+        let gameScreen = GameScreen.new(gridSize);
+
         do resetGrid();
-        do renderBoardAt(x, y);
+        //do setWinningPosibilitiesTable();
+        do renderBoard();
+        do renderCursor();
 
         return this;
     }
@@ -33,26 +41,135 @@ class Board {
     */
     method void resetGrid() {
         var int counter;
-        var int gridLastPos;
 
         let counter = 0;
 
-        let gridState = String.new(gridLastPos);
+        let gridState = String.new(totalCells);
         while(counter < totalCells) {
-            gridState.setCharAt(counter, '-');
-            counter = counter + 1;
+            let gridState = gridState.appendChar("-");
+            //do gridState.setCharAt(counter, "-");
+            let counter = counter + 1;
         }
         return;
     }
 
 
     /**
-     *  Method to display the board in the screen at the given location
+     *  Method to display the board in the screen
     */
-    method void renderBoardAt(int x, int y) {
+    method void renderBoard() {
+        do gameScreen.drawBoard();
+        return;
+    }
+
+    /**
+     *  Method sets up a table that defines victory moves
+    */
+    method void setWinningPosibilitiesTable() {
+ 
+        // 0 --> 12, 36, 48, X
+        // 1 --> 02, 47, X
+        // 2 --> 02, 46, 58, X
+        // 3 --> 06, 45, X
+        // 4 --> 08, 17, 26, 35, X
+        // 5 --> 28, 34, X
+        // 6 --> 03, 24, 78, X
+        // 7 --> 14, 68, X
+        // 8 --> 04, 25, 67, X
+        var Array innerArray;
+
+        let winningPosibilities = Array.new(9 * 5);
+
+
+        // for 0
+        let innerArray = Array.new(4);
+        let innerArray[0] = "12";
+        let innerArray[1] = "36";
+        let innerArray[2] = "48";
+        let innerArray[3] = "X";
+
+        let winningPosibilities[0] = innerArray;
+
+
+        // for 1
+        let innerArray = Array.new(3);
+        let innerArray[0] = "02";
+        let innerArray[1] = "47";
+        let innerArray[2] = "X";
+
+        let winningPosibilities[1] = innerArray;
+
+
+        // for 2
+        let innerArray = Array.new(4);
+        let innerArray[0] = "02";
+        let innerArray[1] = "46";
+        let innerArray[2] = "58";
+        let innerArray[3] = "X";
+
+        let winningPosibilities[2] = innerArray;
+
+
+        // for 3
+        let innerArray = Array.new(3);
+        let innerArray[0] = "06";
+        let innerArray[1] = "45";
+        let innerArray[2] = "X";
+
+        let winningPosibilities[3] = innerArray;
+
+
+        // for 4
+        let innerArray = Array.new(5);
+        let innerArray[0] = "08";
+        let innerArray[1] = "17";
+        let innerArray[2] = "26";
+        let innerArray[3] = "35";
+        let innerArray[4] = "X";
+
+        let winningPosibilities[4] = innerArray;
+
+
+        // for 5
+        let innerArray = Array.new(3);
+        let innerArray[0] = "28";
+        let innerArray[1] = "34";
+        let innerArray[3] = "X";
+
+        let winningPosibilities[5] = innerArray;
+
+
+        // for 6
+        let innerArray = Array.new(4);
+        let innerArray[0] = "03";
+        let innerArray[1] = "24";
+        let innerArray[2] = "78";
+        let innerArray[4] = "X";
+
+        let winningPosibilities[6] = innerArray;
+
+
+        // for 7
+        let innerArray = Array.new(4);
+        let innerArray[0] = "14";
+        let innerArray[1] = "68";
+        let innerArray[2] = "X";
+
+        let winningPosibilities[7] = innerArray;
+
+
+        // for 8
+        let innerArray = Array.new(4);
+        let innerArray[0] = "04";
+        let innerArray[1] = "25";
+        let innerArray[2] = "67";
+        let innerArray[3] = "X";
+
+        let winningPosibilities[8] = innerArray;
 
         return;
     }
+
 
     /**
      *  Method moves the cursor to the left by one grid cell
@@ -83,7 +200,7 @@ class Board {
      *  the first grid position
     */
     method void moveCursorRight() {
-        if(cursor = totalCells - 1) {
+        if(cursor = (totalCells-1)) {
             let cursor = 0; // first grid position
         } else {
             let cursor = cursor + 1;
@@ -100,10 +217,12 @@ class Board {
      *  the cursor is moved to the downmost grid cell in the same column
     */
     method void moveCursorUp() {
-        if( (cursor - gridSize) <= 0) {
-            let cursor = totalCells - gridSize + cursor; // downmost grid position
+        var int posWhenUp;
+        let posWhenUp = cursor - gridSize;
+        if(posWhenUp > 0) {
+            let cursor = posWhenUp;
         } else {
-            let cursor = cursor - gridSize;
+            let cursor = totalCells - gridSize + cursor; // downmost grid position
         }
 
         do renderCursor();
@@ -117,10 +236,12 @@ class Board {
      *  the cursor is moved to the topmost grid cell in the same column
     */
     method void moveCursorDown() {
-        if( (cursor + gridSize) >= totalCells) {
-            let cursor = totalCells - gridSize - cursor; // topmost grid position
+        var int posWhenDown;
+        let posWhenDown = cursor + gridSize;
+        if(posWhenDown < totalCells) {
+            let cursor = posWhenDown;
         } else {
-            let cursor = cursor + gridSize;
+            let cursor = totalCells - gridSize - cursor; // topmost grid position
         }
 
         do renderCursor();
@@ -133,42 +254,89 @@ class Board {
      *  The cursor is a box as of now
      *
     */
-    method void renderCursor() {     
+    method void renderCursor() {
+        do gameScreen.drawCursor(cursor);
         return;
     }
 
     /**
      *  Method sets/renders the shape(X or O) derived from the given player at the current cursor position in the board
-     *  Returns 1 if the move has resulted in the player's victory, 0 if the move has resulted in a draw, 2 if the game
+     *  Returns <code>true</code> if the move has resulted in the player's victory
      *  hasn't completed
     */
-    method int setMove(Player player) {
+    method boolean setMove(Player player) {
+
         var Shape shape;
-        var int shapeVal;
+        var char shapeVal;
+        var boolean isWinningMove;
 
-        let shape = do player.getShape();
-        let shapeVal = do shape.getValue();
-       
-        gridState.setCharAt(cursor, shapeVal);
+        let shape = player.getShape();
+        let shapeVal = shape.getValue();
 
-        var int row;
-        var int col;
+        do gridState.setCharAt(cursor, shapeVal);
 
-        let row = 0;
-        let col = 0;
+        let numberOfMovesMade = numberOfMovesMade + 1;
 
-        // 012345678
-        var int pos;
-        let pos = 0;
-        while(row <= gridSize) {
-            while(col <= gridSize) {
-                pos = row + col;
-                col = col + 1;
+        let isWinningMove = isWinningMove(shapeVal);
+        return isWinningMove;
+    }
+
+    /**
+     *  Method returns <code>true</code> if the current move has resulted in the player's victory
+    */
+    method boolean isWinningMove(char shapeVal) {
+
+        var Array winningCombos;
+        var int index;
+        var String combo;
+
+        var int idx;
+        var char val;
+
+        let index = 0;
+        let winningCombos = winningPosibilities[cursor];
+
+        while(~(winningCombos[index] = "X")) {
+
+            let combo = winningCombos[index];
+            let idx = combo.charAt(0);  // casting char to int
+
+            let val = gridState.charAt(idx);
+
+            if(val = shapeVal) {
+                let idx = combo.charAt(1);  // casting char to int
+
+                let val = gridState.charAt(idx);
+
+                if(val = shapeVal) {
+                    return true;
+                }
             }
-            row = row + 1;
+
+            let index = index + 1;
         }
 
-        return 2;
+        return false;
+    }
+
+    /**
+     *  Method returns <code>true</code> if the cursor is at a vacant position in the board
+    */
+    method boolean isMoveValid() {
+        var boolean isValid;
+        var char valueAtCurrentPosition;
+
+        let valueAtCurrentPosition = gridState.charAt(cursor);
+        let isValid = ~(valueAtCurrentPosition = 121);  // - is 121 in ASCII
+
+        return isValid;
+    }
+
+    /**
+     *  Method returns <code>true</code> if there are no more vacant cells in the board
+    */
+    method boolean isFull() {
+        return (numberOfMovesMade = (totalCells - 1));
     }
 
 

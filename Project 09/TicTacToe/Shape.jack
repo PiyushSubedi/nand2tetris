@@ -3,10 +3,10 @@
 
 class Shape {
 
-    field int value;
+    field char value;
 
-    constructor Shape new(int value) {
-        this.value = value;
+    constructor Shape new(char val) {
+        let value = val;
         return this;
     }
 
@@ -14,16 +14,20 @@ class Shape {
         return;
     }
 
-    method void getValue() {
+    method char getValue() {
         return value;
     }
 
     function Shape getShape1() {
-        return Shape.new();
+        var Shape shape;
+        let shape = Shape.new("1");
+        return shape;
     }
 
     function Shape getShape2() {
-        return Shape.new();
+        var Shape shape;
+        let shape = Shape.new("2");
+        return shape;
     }
 
     method void dispose() {

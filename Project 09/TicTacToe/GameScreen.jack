@@ -1,0 +1,193 @@
+/**
+ *  This class represents the user interface for the game
+ *  It contains methods like drawBoard, drawCursor and so on
+ *  that are rendered on the screen when playing the game
+*/
+
+
+class GameScreen {
+
+    field int SCREEN_MAX_X; // 256
+
+    field int SCREEN_MAX_Y; // 512
+
+    //field int scale; // holds the scale of the entire UI, 1 implies normal scaling (should be 1 <= scale <=3 ), TO BE IMPLEMENTED
+
+    field int cellLength; // length of each cell in the board
+
+    field int xStart;  // x-coordinate of the starting position of the board
+
+    field int yStart;  // y-coordinate of the starting position of the board
+
+    field int cursorPadding;  // holds the gap(in pixel) for the cursor to be rendered from the cell boundary
+
+    field int cursorLength; // holds the length of the cursor; is equal to cellLength - 2 * cursorPadding
+
+    field int cursorPreviousx1, cursorPreviousy1, cursorPreviousx2, cursorPreviousy2;   // hold the previous instances of cursor coordinates; that way we can clear it out
+
+    field int gridSize; // holds the size of the grid being displayed (3*3 or 4*4,..)
+
+
+    /**
+     *  Initializes screen parameters
+    */
+    constructor GameScreen new(int gSize) {
+
+        let gridSize = gSize;
+
+        // registering 256*512 screen info
+        let SCREEN_MAX_X = 512;
+        let SCREEN_MAX_Y = 256;
+
+        let cellLength = 40; // default 20
+
+        // setting the starting position to the center
+        let xStart = (SCREEN_MAX_X/2) - 1 - (cellLength/2);
+        let yStart = (SCREEN_MAX_Y/2) - 1 - cellLength - (cellLength/2);
+
+        let cursorPadding = 5;
+        let cursorLength = cellLength - (2*cursorPadding);
+
+        // initializing coordinates
+        let cursorPreviousx1 = 0;
+        let cursorPreviousy1 = 0;
+        let cursorPreviousx2 = 0;
+        let cursorPreviousy2 = 0;
+
+        do Screen.setColor(true);
+
+        return this;
+    }
+
+
+    /**
+     * Method clears the game screen
+    */
+    method void clear() {
+        do Screen.clearScreen();
+        return;
+    }
+
+
+    /**
+     * Draws a Tic-Tac-Toe board on the screen using the screen parameters defined in the object(i.e instance of this class)
+    */
+    method void drawBoard() {
+        var int x1, y1, x2, y2;
+
+        /*
+            |
+            |
+            |
+        */
+        let x1 = xStart;
+        let y1 = yStart;
+
+        let x2 = x1;
+        let y2 = y1 + (gridSize*cellLength);
+
+        do Screen.drawLine(x1, y1, x2, y2);
+
+
+        /*
+            |  |
+            |  |
+            |  |
+        */
+        let x1 = xStart + cellLength;
+        let y1 = yStart;
+
+        let x2 = x1;
+        let y2 = y1 + (gridSize*cellLength);
+
+        do Screen.drawLine(x1, y1, x2, y2);
+
+
+        /*
+          __|__|__
+            |  |
+            |  |
+        */
+        let x1 = xStart - cellLength;
+        let y1 = yStart + cellLength;
+
+        let x2 = x1 + (gridSize*cellLength);
+        let y2 = y1;
+
+        do Screen.drawLine(x1, y1, x2, y2);
+
+        
+        /*
+          __|__|__
+          __|__|__
+            |  |
+        */
+        let x1 = xStart - cellLength;
+        let y1 = y1 + cellLength;
+
+        let x2 = x1 + (gridSize*cellLength);
+        let y2 = y1;
+
+        do Screen.drawLine(x1, y1, x2, y2);
+
+        return;
+    }
+
+    /**
+     *  Draws a square cursor on the screen, inside cell boundary at the given position
+    */
+    method void drawCursor(int pos) {
+
+        var int x1,y1,x2,y2;
+        var int posX, posY;
+
+        do Output.printInt(pos);
+        do Output.printChar("-");
+
+        do clearCursor();
+
+        let posY = pos/gridSize;
+        let posX = pos - (gridSize*posY); //  = pos % 3
+
+        let x1 = xStart - cursorPadding - cursorLength + (posX * (cursorLength + 2*cursorPadding));
+        let y1 = yStart + cursorPadding + (posY * (cursorLength + 2*cursorPadding));
+
+        let x2 = x1 + cursorLength;
+        let y2 = y1 + cursorLength;
+
+        do Screen.drawRectangle(x1,y1,x2,y2);
+
+        let cursorPreviousx1 = x1;
+        let cursorPreviousy1 = y1;
+        let cursorPreviousx2 = x2;
+        let cursorPreviousy2 = y2;
+
+
+        return;
+    }
+
+    method void clearCursor() {
+        do Screen.setColor(false);
+
+        do Screen.drawRectangle(cursorPreviousx1, cursorPreviousy1, cursorPreviousx2, cursorPreviousy2);
+
+        do Screen.setColor(true);
+
+        return;
+    }
+
+
+    method void drawCircle() {
+        return;
+    }
+
+
+    method void drawCross() {
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}
