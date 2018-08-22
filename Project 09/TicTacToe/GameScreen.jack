@@ -23,7 +23,7 @@ class GameScreen {
 
     field int cursorLength; // holds the length of the cursor; is equal to cellLength - 2 * cursorPadding
 
-    field int cursorPreviousx1, cursorPreviousy1, cursorPreviousx2, cursorPreviousy2;   // hold the previous instances of cursor coordinates; that way we can clear it out
+    field int cursorPreviousx1, cursorPreviousy1;   // hold the previous instances of cursor coordinates; that way we can clear it out
 
     field int gridSize; // holds the size of the grid being displayed (3*3 or 4*4,..)
 
@@ -51,8 +51,6 @@ class GameScreen {
         // initializing coordinates
         let cursorPreviousx1 = 0;
         let cursorPreviousy1 = 0;
-        let cursorPreviousx2 = 0;
-        let cursorPreviousy2 = 0;
 
         do Screen.setColor(true);
 
@@ -74,6 +72,14 @@ class GameScreen {
     */
     method void drawBoard() {
         var int x1, y1, x2, y2;
+
+        // drawing horizontal before board as a border
+        let x1 = 0;
+        let y1 = yStart - (cellLength/2);
+        let x2 = SCREEN_MAX_X - 1;
+        let y2 = y1;
+
+        do Screen.drawLine(x1, y1, x2, y2);
 
         /*
             |
@@ -130,6 +136,15 @@ class GameScreen {
 
         do Screen.drawLine(x1, y1, x2, y2);
 
+
+        // drawing horizontal after board as a border
+        let x1 = 0;
+        let y1 = yStart + (gridSize*cellLength) + (cellLength/2);
+        let x2 = SCREEN_MAX_X - 1;
+        let y2 = y1;
+
+        do Screen.drawLine(x1, y1, x2, y2);
+
         return;
     }
 
@@ -138,11 +153,8 @@ class GameScreen {
     */
     method void drawCursor(int pos) {
 
-        var int x1,y1,x2,y2;
+        var int x1,y1;
         var int posX, posY;
-
-        do Output.printInt(pos);
-        do Output.printChar(45);
 
         do clearCursor();
 
@@ -152,40 +164,112 @@ class GameScreen {
         let x1 = xStart - cursorPadding - cursorLength + (posX * (cursorLength + (2*cursorPadding)));
         let y1 = yStart + cursorPadding + (posY * (cursorLength + (2*cursorPadding)));
 
-        let x2 = x1 + cursorLength;
-        let y2 = y1 + cursorLength;
-
-        do Screen.drawRectangle(x1,y1,x2,y2);
+        // draw unfilled square
+        do drawTransparentSquare(x1, y1, cursorLength);
 
         let cursorPreviousx1 = x1;
         let cursorPreviousy1 = y1;
-        let cursorPreviousx2 = x2;
-        let cursorPreviousy2 = y2;
-
 
         return;
     }
 
+    /**
+     *  Method erases the cursor from the screen
+    */
     method void clearCursor() {
         do Screen.setColor(false);
 
-        do Screen.drawRectangle(cursorPreviousx1, cursorPreviousy1, cursorPreviousx2, cursorPreviousy2);
+        do drawTransparentSquare(cursorPreviousx1, cursorPreviousy1, cursorLength);
 
         do Screen.setColor(true);
 
         return;
     }
 
+    
+    /**
+     *  Method draws a sqaure that is not filled with color
+    */
+    method void drawTransparentSquare(int x1, int y1, int length) {
 
+        do Screen.drawLine(x1, y1, x1 + length, y1);
+        do Screen.drawLine(x1, y1, x1, y1 + length);
+        do Screen.drawLine(x1 + length, y1, x1 + length, y1 + length);
+        do Screen.drawLine(x1, y1 + length, x1 + length, y1 + length);
+
+        return;
+    }
+
+
+    /**
+     *  Method draws the given shape within the cursor in the screen
+    */
+    method void drawShape(Shape shape) {
+
+        var int type, circle, cross;
+
+        let type = shape.getType();
+
+        let circle = 79;  // O = 79
+        let cross = 88;   // X = 88
+
+        if(type = circle) {
+            do drawCircle();
+        }
+
+        if(type = cross) {
+            do drawCross();
+        }
+
+        return;
+    }
+
+
+    /**
+     *  Method draws a circle at the given position
+    */
     method void drawCircle() {
+
+        var int x1,y1,r;
+
+        let r = cursorLength/2;
+        let x1 = cursorPreviousx1 + r;
+        let y1 = cursorPreviousy1 + r;
+
+        do Screen.drawCircle(x1, y1, r);
+
         return;
     }
 
-
+    /**
+     * Method draws a cross within the cursor
+    */
     method void drawCross() {
+
+        var int x1,y1,x2,y2;
+
+        let x1 = cursorPreviousx1;
+        let y1 = cursorPreviousy1;
+
+        let x2 = x1 + cursorLength;
+        let y2 = y1 + cursorLength;
+
+        do Screen.drawLine(x1, y1, x2, y2);
+
+        let x1 = x1;
+        let y1 = y1 + cursorLength;
+
+        let x2 = x1 + cursorLength;
+        let y2 = cursorPreviousy1;
+
+        do Screen.drawLine(x1, y1, x2, y2);
+
         return;
     }
 
+    /**
+     *  Disposes all disposable entities
+    */
     method void dispose() {
         do Memory.deAlloc(this);
         return;

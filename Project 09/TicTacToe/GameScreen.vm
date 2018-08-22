@@ -1,9 +1,9 @@
 function GameScreen.new 0
-push constant 12
+push constant 10
 call Memory.alloc 1
 pop pointer 0
 push argument 0
-pop this 11
+pop this 9
 push constant 512
 pop this 0
 push constant 256
@@ -45,10 +45,6 @@ pop this 7
 push constant 0
 pop this 8
 push constant 0
-pop this 9
-push constant 0
-pop this 10
-push constant 0
 not
 call Screen.setColor 1
 pop temp 0
@@ -64,6 +60,26 @@ return
 function GameScreen.drawBoard 4
 push argument 0
 pop pointer 0
+push constant 0
+pop local 0
+push this 4
+push this 2
+push constant 2
+call Math.divide 2
+sub
+pop local 1
+push this 0
+push constant 1
+sub
+pop local 2
+push local 1
+pop local 3
+push local 0
+push local 1
+push local 2
+push local 3
+call Screen.drawLine 4
+pop temp 0
 push this 3
 pop local 0
 push this 4
@@ -71,7 +87,7 @@ pop local 1
 push local 0
 pop local 2
 push local 1
-push this 11
+push this 9
 push this 2
 call Math.multiply 2
 add
@@ -91,7 +107,7 @@ pop local 1
 push local 0
 pop local 2
 push local 1
-push this 11
+push this 9
 push this 2
 call Math.multiply 2
 add
@@ -111,7 +127,7 @@ push this 2
 add
 pop local 1
 push local 0
-push this 11
+push this 9
 push this 2
 call Math.multiply 2
 add
@@ -133,7 +149,7 @@ push this 2
 add
 pop local 1
 push local 0
-push this 11
+push this 9
 push this 2
 call Math.multiply 2
 add
@@ -147,35 +163,53 @@ push local 3
 call Screen.drawLine 4
 pop temp 0
 push constant 0
+pop local 0
+push this 4
+push this 9
+push this 2
+call Math.multiply 2
+add
+push this 2
+push constant 2
+call Math.divide 2
+add
+pop local 1
+push this 0
+push constant 1
+sub
+pop local 2
+push local 1
+pop local 3
+push local 0
+push local 1
+push local 2
+push local 3
+call Screen.drawLine 4
+pop temp 0
+push constant 0
 return
-function GameScreen.drawCursor 6
+function GameScreen.drawCursor 4
 push argument 0
 pop pointer 0
-push argument 1
-call Output.printInt 1
-pop temp 0
-push constant 45
-call Output.printChar 1
-pop temp 0
 push pointer 0
 call GameScreen.clearCursor 1
 pop temp 0
 push argument 1
-push this 11
+push this 9
 call Math.divide 2
-pop local 5
+pop local 3
 push argument 1
-push this 11
-push local 5
+push this 9
+push local 3
 call Math.multiply 2
 sub
-pop local 4
+pop local 2
 push this 3
 push this 5
 sub
 push this 6
 sub
-push local 4
+push local 2
 push this 6
 push constant 2
 push this 5
@@ -187,7 +221,7 @@ pop local 0
 push this 4
 push this 5
 add
-push local 5
+push local 3
 push this 6
 push constant 2
 push this 5
@@ -196,28 +230,16 @@ add
 call Math.multiply 2
 add
 pop local 1
-push local 0
-push this 6
-add
-pop local 2
-push local 1
-push this 6
-add
-pop local 3
+push pointer 0
 push local 0
 push local 1
-push local 2
-push local 3
-call Screen.drawRectangle 4
+push this 6
+call GameScreen.drawTransparentSquare 4
 pop temp 0
 push local 0
 pop this 7
 push local 1
 pop this 8
-push local 2
-pop this 9
-push local 3
-pop this 10
 push constant 0
 return
 function GameScreen.clearCursor 0
@@ -226,11 +248,11 @@ pop pointer 0
 push constant 0
 call Screen.setColor 1
 pop temp 0
+push pointer 0
 push this 7
 push this 8
-push this 9
-push this 10
-call Screen.drawRectangle 4
+push this 6
+call GameScreen.drawTransparentSquare 4
 pop temp 0
 push constant 0
 not
@@ -238,14 +260,144 @@ call Screen.setColor 1
 pop temp 0
 push constant 0
 return
-function GameScreen.drawCircle 0
+function GameScreen.drawTransparentSquare 0
 push argument 0
 pop pointer 0
+push argument 1
+push argument 2
+push argument 1
+push argument 3
+add
+push argument 2
+call Screen.drawLine 4
+pop temp 0
+push argument 1
+push argument 2
+push argument 1
+push argument 2
+push argument 3
+add
+call Screen.drawLine 4
+pop temp 0
+push argument 1
+push argument 3
+add
+push argument 2
+push argument 1
+push argument 3
+add
+push argument 2
+push argument 3
+add
+call Screen.drawLine 4
+pop temp 0
+push argument 1
+push argument 2
+push argument 3
+add
+push argument 1
+push argument 3
+add
+push argument 2
+push argument 3
+add
+call Screen.drawLine 4
+pop temp 0
 push constant 0
 return
-function GameScreen.drawCross 0
+function GameScreen.drawShape 3
 push argument 0
 pop pointer 0
+push argument 1
+call Shape.getType 1
+pop local 0
+push constant 79
+pop local 1
+push constant 88
+pop local 2
+push local 0
+push local 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call GameScreen.drawCircle 1
+pop temp 0
+label IF_FALSE0
+push local 0
+push local 2
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+call GameScreen.drawCross 1
+pop temp 0
+label IF_FALSE1
+push constant 0
+return
+function GameScreen.drawCircle 3
+push argument 0
+pop pointer 0
+push this 6
+push constant 2
+call Math.divide 2
+pop local 2
+push this 7
+push local 2
+add
+pop local 0
+push this 8
+push local 2
+add
+pop local 1
+push local 0
+push local 1
+push local 2
+call Screen.drawCircle 3
+pop temp 0
+push constant 0
+return
+function GameScreen.drawCross 4
+push argument 0
+pop pointer 0
+push this 7
+pop local 0
+push this 8
+pop local 1
+push local 0
+push this 6
+add
+pop local 2
+push local 1
+push this 6
+add
+pop local 3
+push local 0
+push local 1
+push local 2
+push local 3
+call Screen.drawLine 4
+pop temp 0
+push local 0
+pop local 0
+push local 1
+push this 6
+add
+pop local 1
+push local 0
+push this 6
+add
+pop local 2
+push this 8
+pop local 3
+push local 0
+push local 1
+push local 2
+push local 3
+call Screen.drawLine 4
+pop temp 0
 push constant 0
 return
 function GameScreen.dispose 0

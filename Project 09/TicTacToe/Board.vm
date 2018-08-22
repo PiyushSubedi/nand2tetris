@@ -16,7 +16,10 @@ push this 1
 call GameScreen.new 1
 pop this 6
 push pointer 0
-call Board.resetGrid 1
+call Board.reset 1
+pop temp 0
+push pointer 0
+call Board.setWinningPosibilitiesTable 1
 pop temp 0
 push pointer 0
 call Board.renderBoard 1
@@ -26,7 +29,7 @@ call Board.renderCursor 1
 pop temp 0
 push pointer 0
 return
-function Board.resetGrid 1
+function Board.reset 1
 push argument 0
 pop pointer 0
 push constant 0
@@ -50,6 +53,9 @@ add
 pop local 0
 goto WHILE_EXP0
 label WHILE_END0
+push this 6
+call GameScreen.clear 1
+pop temp 0
 push constant 0
 return
 function Board.renderBoard 0
@@ -64,8 +70,6 @@ function Board.setWinningPosibilitiesTable 1
 push argument 0
 pop pointer 0
 push constant 9
-push constant 5
-call Math.multiply 2
 call Array.new 1
 pop this 5
 push constant 4
@@ -187,7 +191,7 @@ push constant 2
 call String.new 1
 push constant 48
 call String.appendChar 2
-push constant 50
+push constant 49
 call String.appendChar 2
 pop temp 0
 pop pointer 1
@@ -389,7 +393,7 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-push constant 3
+push constant 2
 push local 0
 add
 push constant 1
@@ -450,7 +454,7 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-push constant 4
+push constant 3
 push local 0
 add
 push constant 1
@@ -469,7 +473,7 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-push constant 4
+push constant 3
 call Array.new 1
 pop local 0
 push constant 0
@@ -706,6 +710,10 @@ pop local 0
 push local 0
 call Shape.getValue 1
 pop local 1
+push this 6
+push local 0
+call GameScreen.drawShape 2
+pop temp 0
 push this 0
 push this 3
 push local 1
@@ -721,7 +729,7 @@ call Board.isWinningMove 2
 pop local 2
 push local 2
 return
-function Board.isWinningMove 5
+function Board.isWinningMove 6
 push argument 0
 pop pointer 0
 push constant 0
@@ -732,17 +740,10 @@ add
 pop pointer 1
 push that 0
 pop local 0
+push constant 0
+pop local 5
 label WHILE_EXP0
-push local 1
-push local 0
-add
-pop pointer 1
-push that 0
-push constant 1
-call String.new 1
-push constant 88
-call String.appendChar 2
-eq
+push local 5
 not
 not
 if-goto WHILE_END0
@@ -755,20 +756,21 @@ pop local 2
 push local 2
 push constant 0
 call String.charAt 2
-pop local 3
-push this 0
-push local 3
-call String.charAt 2
-pop local 4
-push local 4
-push argument 1
+push constant 88
 eq
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
+push constant 0
+not
+pop local 5
+goto IF_END0
+label IF_FALSE0
 push local 2
-push constant 1
+push constant 0
 call String.charAt 2
+push constant 48
+sub
 pop local 3
 push this 0
 push local 3
@@ -780,11 +782,28 @@ eq
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
+push local 2
+push constant 1
+call String.charAt 2
+push constant 48
+sub
+pop local 3
+push this 0
+push local 3
+call String.charAt 2
+pop local 4
+push local 4
+push argument 1
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
 push constant 0
 not
 return
+label IF_FALSE2
 label IF_FALSE1
-label IF_FALSE0
+label IF_END0
 push local 1
 push constant 1
 add
@@ -803,7 +822,6 @@ pop local 1
 push local 1
 push constant 45
 eq
-not
 pop local 0
 push local 0
 return
@@ -812,8 +830,6 @@ push argument 0
 pop pointer 0
 push this 4
 push this 2
-push constant 1
-sub
 eq
 return
 function Board.dispose 0

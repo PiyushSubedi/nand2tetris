@@ -3,33 +3,56 @@
 
 class Shape {
 
-    field char value;
+    field char value;   // unique identifier for the Shape
 
-    constructor Shape new(char val) {
+    field char type;    // 'c' for circle, 'r' for cross
+
+
+    /**
+     *  Constructs a Shape of the given type and value
+    */
+    constructor Shape new(char val, char typ) {
         let value = val;
+        let type = typ;
         return this;
     }
 
-    method void renderAt(int x, int y) {
-        return;
-    }
-
+    /**
+     *  Method returns the value of the Shape
+    */
     method char getValue() {
         return value;
     }
 
-    function Shape getShape1() {
+    /**
+     *  Method returns the shape type
+    */
+    method char getType() {
+        return type;
+    }
+
+
+    /**
+     *  Function returns a new Shape of value '1' and type Circle
+    */
+    function Shape getCircle() {
         var Shape shape;
-        let shape = Shape.new("1");
+        let shape = Shape.new("1", 79); // 79 = O
         return shape;
     }
 
-    function Shape getShape2() {
+    /**
+     *  Function returns a new Shape of value '2' and type Cross
+    */
+    function Shape getCross() {
         var Shape shape;
-        let shape = Shape.new("2");
+        let shape = Shape.new("2", 88); // 88 = X
         return shape;
     }
 
+    /**
+     *  Disposes all disposable entities
+    */
     method void dispose() {
         do Memory.deAlloc(this);
         return;

@@ -1,12 +1,13 @@
 /**
  * The engine of the TicTacToe game that runs the game.
- * This is a simple recreation of the classic TicTacToe game.
+ * This is a simple recreation of the classic TicTacToe game where the first player to
+ * register same shapes across a row or a column or diagonally wins.
  * It is a multiplayer game where player makes their moves by simply presssing enter
  * Navigation through the board is done using the left, right, top and down arrow keys
- * The 'q' key is used to quit the game.
+ * The 'Q' key is used to quit the game.
 */
 
-/* TODO : Reset support, Bot mode, Animation for victory */
+/* TODO : Bot mode, UI/Graphics Optimization */
 
 class Game {
 
@@ -23,23 +24,78 @@ class Game {
 
 
     /**
-     *  Constructs new board and players
+     *  Constructs new board
     */
     constructor Game new() {
+        let direction = 0;  // initial state is no movement
+        return this;
+    }
+
+
+    /**
+     *  Method initializes players(2 of them) for the game
+     *  Asks user for the name of the players
+    */
+    method void setPlayers() {
+
+        var String pName;
+
+        let pName = Keyboard.readLine("Enter name for Player 1 : ");
+
+        let player1 = Player.getPlayer1(pName);
+
+        let pName = Keyboard.readLine("Enter name for Player 2 : ");
+
+        let player2 = Player.getPlayer2(pName);
+
+        return;
+    }
+
+
+    /**
+     *  Method sets up the playing screen
+    */
+    method void setBoard() {
+
+        let currentPlayer = player1;
 
         let board = Board.new(200, 125); // creates a board at round about center of the screen
 
-        /* MUST DO : ask user for names of player 1 and player 2*/
-        let player1 = Player.getPlayer1("John");
-        let player2 = Player.getPlayer2("Elena");
+        do addHeaderInfo();
 
-        // player1 is always the first player (make random ?)
-        let currentPlayer = player1;
+        do displayInFooter(currentPlayer.getName(), "'s turn");
 
-        let direction = 0;  // initial state is no movement
-
-        return this;
+        return;
     }
+
+    /**
+     *  Method adds static header info
+    */
+    method void addHeaderInfo() {
+        var Shape shape;
+
+        // set static header info
+        do Output.moveCursor(1,5);
+
+        do Output.printString(player1.getName());
+        do Output.printString(" is ");
+        let shape = player1.getShape();
+        do Output.printChar(shape.getType());
+
+        do Output.moveCursor(3,5);
+
+        do Output.printString(player2.getName());
+        do Output.printString(" is ");
+        let shape = player2.getShape();
+        do Output.printChar(shape.getType());
+        do Output.println();
+
+        do Output.moveCursor(0,48);
+        do Output.printString("Press Q to quit");
+
+        return;
+    }
+
 
     /**
      *  Runs the game
@@ -53,24 +109,31 @@ class Game {
         var boolean validMove;
         var boolean won;
 
-        let exit = false;
+        // initialize players
+        do setPlayers();
 
+        // set up the playing board/grid
+        do setBoard();
+
+
+        // start the game
+        let exit = false;
         while (~exit) {
-        
+
             let direction = 0;
             let movePlayed = false;
 
             // waits for a key to be pressed
             while (key = 0) {
                 let key = Keyboard.keyPressed();
-                do moveCursor();
             }
+
             if (key = 81)  { let exit = true; }     // q key
             if (key = 131) { let direction = 1; }   // up arrow
             if (key = 133) { let direction = 2; }   // down arrow
             if (key = 130) { let direction = 3; }   // left arrow
             if (key = 132) { let direction = 4; }   // right arrow
-            if (key = 13) {
+            if (key = 128) {
                 // enter key
                 let movePlayed = true;
             }
@@ -79,15 +142,32 @@ class Game {
                 let validMove = board.isMoveValid();
                 if(validMove) {
                     let won = board.setMove(currentPlayer);
-
                     if(won) {
-                        do Output.printString(currentPlayer.getName() + " has won!!");
+                        do displayInFooter(currentPlayer.getName(), "HAS WON!!");
                         let exit = true;
                     } else {
                         do switchPlayer();  // switch player after a move is made
                         let exit = board.isFull();
                         if(exit) {
-                            do Output.printString("Boohoo! The game has ended in a draw");
+                            do displayInFooter("BOHOO!!","THE GAME HAS ENDED IN A DRAW");
+                        } else {
+                            do displayInFooter(currentPlayer.getName(), "'s turn");
+                        }
+                    }
+
+                    if(exit) {
+                        // play again?
+                        do appendToFooter("Press R to play again. Press any other key to quit");
+
+                        let key = 0;
+                        while(key = 0) {
+                            let key = Keyboard.keyPressed();
+                        }
+
+                        if(key = 82) {
+                            let exit = false;
+                            do board.dispose();
+                            do setBoard();
                         }
                     }
                 }
@@ -100,6 +180,48 @@ class Game {
                 let key = Keyboard.keyPressed();
             }
         }
+
+        do board.reset();
+        do Output.moveCursor(11, 24); // Round about center
+        do Output.printString("THE GAME HAS ENDED !!");
+
+        return;
+    }
+
+
+    /**
+     *  Prints the given messages in the same line in the footer region of the screen
+    */
+    method void displayInFooter(String msg1, String msg2) {
+
+        var int l1, l2, startCol;
+
+        let l1 = msg1.length();
+        let l2 = msg2.length();
+
+        let startCol = 64 / 2 - 1 - ((l1 + l2)/2);
+
+        // flushing the output region first
+        do Output.moveCursor(20, 0);   // this position could have been calculated relative to board but well - time constraint!! :(
+        do Output.printString("                                                                ");
+
+        do Output.moveCursor(20, startCol);
+
+        do Output.printString(msg1);
+        do Output.printString(" ");
+        do Output.printString(msg2);
+
+        return;
+    }
+
+    /**
+     *  Adds the msg in the new line of the footer
+    */
+    method void appendToFooter(String msg) {
+
+        do Output.moveCursor(21, 10);
+
+        do Output.printString(msg);
 
         return;
     }

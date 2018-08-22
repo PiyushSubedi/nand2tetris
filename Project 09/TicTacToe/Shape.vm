@@ -1,36 +1,40 @@
 function Shape.new 0
-push constant 1
+push constant 2
 call Memory.alloc 1
 pop pointer 0
 push argument 0
 pop this 0
+push argument 1
+pop this 1
 push pointer 0
-return
-function Shape.renderAt 0
-push argument 0
-pop pointer 0
-push constant 0
 return
 function Shape.getValue 0
 push argument 0
 pop pointer 0
 push this 0
 return
-function Shape.getShape1 1
+function Shape.getType 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Shape.getCircle 1
 push constant 1
 call String.new 1
 push constant 49
 call String.appendChar 2
-call Shape.new 1
+push constant 79
+call Shape.new 2
 pop local 0
 push local 0
 return
-function Shape.getShape2 1
+function Shape.getCross 1
 push constant 1
 call String.new 1
 push constant 50
 call String.appendChar 2
-call Shape.new 1
+push constant 88
+call Shape.new 2
 pop local 0
 push local 0
 return

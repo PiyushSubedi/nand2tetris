@@ -1,14 +1,12 @@
 /**
- *  
+ *  Class holds an instance of player containing player info
 */
-
-
 
 class Player {
 
-    field String name;
+    field String name;  // Name of the player
 
-    field Shape shape;
+    field Shape shape;  // Shape associated with the player (Circle or Cross)
 
     constructor Player new(String nm, Shape shp) {
         let name = nm;
@@ -17,37 +15,47 @@ class Player {
         return this;
     }
 
-
+    /**
+     *  Method returns the name of the player
+    */
     method String getName() {
         return name;
     }
 
+    /**
+     *  Method returns the Shape object associated with the player
+    */
     method Shape getShape() {
         return shape;
     }
 
 
-
+    /**
+     *  Function returns a new player assigning it a unique Shape
+    */
     function Player getPlayer1(String name) {
         var Player player;
         var Shape shape;
-        let shape = Shape.getShape1();
+        let shape = Shape.getCircle();
         let player = Player.new(name, shape);
         return player;
     }
 
 
+    /**
+     *  Function returns a new player assigning it a unique Shape
+    */
     function Player getPlayer2(String name) {
         var Player player;
         var Shape shape;
-        let shape = Shape.getShape2();
+        let shape = Shape.getCross();
         let player = Player.new(name, shape);
         return player;
     }
 
-    
-
-
+    /**
+     *  Disposes disposable entities
+    */
     method void dispose() {
         do name.dispose();
         do shape.dispose();

@@ -19,7 +19,7 @@ pop pointer 0
 push this 1
 return
 function Player.getPlayer1 2
-call Shape.getShape1 0
+call Shape.getCircle 0
 pop local 1
 push argument 0
 push local 1
@@ -28,7 +28,7 @@ pop local 0
 push local 0
 return
 function Player.getPlayer2 2
-call Shape.getShape2 0
+call Shape.getCross 0
 pop local 1
 push argument 0
 push local 1

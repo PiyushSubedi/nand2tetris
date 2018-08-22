@@ -28,8 +28,8 @@ class Board {
         let numberOfMovesMade = 0;
         let gameScreen = GameScreen.new(gridSize);
 
-        do resetGrid();
-        //do setWinningPosibilitiesTable();
+        do reset();
+        do setWinningPosibilitiesTable();
         do renderBoard();
         do renderCursor();
 
@@ -39,7 +39,7 @@ class Board {
     /**
      *  Method resets/clears the internal grid state
     */
-    method void resetGrid() {
+    method void reset() {
         var int counter;
 
         let counter = 0;
@@ -47,9 +47,11 @@ class Board {
         let gridState = String.new(totalCells);
         while(counter < totalCells) {
             let gridState = gridState.appendChar(45);
-            //do gridState.setCharAt(counter, "-");
             let counter = counter + 1;
         }
+
+        do gameScreen.clear();
+
         return;
     }
 
@@ -78,7 +80,7 @@ class Board {
         // 8 --> 04, 25, 67, X
         var Array innerArray;
 
-        let winningPosibilities = Array.new(9 * 5);
+        let winningPosibilities = Array.new(9);
 
 
         // for 0
@@ -102,7 +104,7 @@ class Board {
 
         // for 2
         let innerArray = Array.new(4);
-        let innerArray[0] = "02";
+        let innerArray[0] = "01";
         let innerArray[1] = "46";
         let innerArray[2] = "58";
         let innerArray[3] = "X";
@@ -134,7 +136,7 @@ class Board {
         let innerArray = Array.new(3);
         let innerArray[0] = "28";
         let innerArray[1] = "34";
-        let innerArray[3] = "X";
+        let innerArray[2] = "X";
 
         let winningPosibilities[5] = innerArray;
 
@@ -144,13 +146,13 @@ class Board {
         let innerArray[0] = "03";
         let innerArray[1] = "24";
         let innerArray[2] = "78";
-        let innerArray[4] = "X";
+        let innerArray[3] = "X";
 
         let winningPosibilities[6] = innerArray;
 
 
         // for 7
-        let innerArray = Array.new(4);
+        let innerArray = Array.new(3);
         let innerArray[0] = "14";
         let innerArray[1] = "68";
         let innerArray[2] = "X";
@@ -273,6 +275,7 @@ class Board {
         let shape = player.getShape();
         let shapeVal = shape.getValue();
 
+        do gameScreen.drawShape(shape);
         do gridState.setCharAt(cursor, shapeVal);
 
         let numberOfMovesMade = numberOfMovesMade + 1;
@@ -293,23 +296,33 @@ class Board {
         var int idx;
         var char val;
 
+        var boolean exit;
+
         let index = 0;
+
         let winningCombos = winningPosibilities[cursor];
 
-        while(~(winningCombos[index] = "X")) {
+        let exit = false;
+        while(~exit) {
 
             let combo = winningCombos[index];
-            let idx = combo.charAt(0);  // casting char to int
 
-            let val = gridState.charAt(idx);
-
-            if(val = shapeVal) {
-                let idx = combo.charAt(1);  // casting char to int
+            if(combo.charAt(0) = 88) {  // = X then terminate loop
+                let exit = true;
+            }
+            else {
+                let idx = combo.charAt(0) - 48;  // casting char to int
 
                 let val = gridState.charAt(idx);
 
                 if(val = shapeVal) {
-                    return true;
+                    let idx = combo.charAt(1) - 48;  // casting char to int
+
+                    let val = gridState.charAt(idx);
+
+                    if(val = shapeVal) {
+                        return true;
+                    }
                 }
             }
 
@@ -327,7 +340,7 @@ class Board {
         var char valueAtCurrentPosition;
 
         let valueAtCurrentPosition = gridState.charAt(cursor);
-        let isValid = ~(valueAtCurrentPosition = 45);  // - is 121 in ASCII
+        let isValid = (valueAtCurrentPosition = 45);  // - is 121 in ASCII
 
         return isValid;
     }
@@ -336,7 +349,7 @@ class Board {
      *  Method returns <code>true</code> if there are no more vacant cells in the board
     */
     method boolean isFull() {
-        return (numberOfMovesMade = (totalCells - 1));
+        return (numberOfMovesMade = totalCells);
     }
 
 
