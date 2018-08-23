@@ -159,6 +159,8 @@ class Game {
                         // play again?
                         do appendToFooter("Press R to play again. Press any other key to quit");
 
+                        do Sys.wait(500);  // delays the next movement
+
                         let key = 0;
                         while(key = 0) {
                             let key = Keyboard.keyPressed();

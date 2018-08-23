@@ -619,6 +619,9 @@ push constant 116
 call String.appendChar 2
 call Game.appendToFooter 2
 pop temp 0
+push constant 500
+call Sys.wait 1
+pop temp 0
 push constant 0
 pop local 0
 label WHILE_EXP2
