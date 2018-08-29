@@ -1,4 +1,8 @@
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *  Main class that analyzes the jack program and
@@ -10,17 +14,37 @@ class JackAnalyzer {
 
     public static void main(String[] args) throws IOException {
 
-        String inputFilename = args[0];
+        String inputFileName = args[0];
 
-        Tokenizer tokenizer = new Tokenizer(inputFilename);
-
-        while(tokenizer.hasMoreTokens()) {
-            tokenizer.advance();
+        List<String> inputFileNames = new ArrayList<>();
+        
+        File inputFile = new File(inputFileName);
+        
+        if(inputFile.isDirectory()) {
+        	for(File f : inputFile.listFiles(new FilenameFilter() {
+				
+				@Override
+				public boolean accept(File arg0, String arg1) {
+					// TODO Auto-generated method stub
+					return arg1.endsWith(".jack");
+				}
+			}))
+        	{
+        		inputFileNames.add(f.getPath());
+        	}
+        } else {
+        	inputFileNames.add(inputFileName);
         }
 
-        tokenizer.save();
+        for(String inp : inputFileNames) {
+
+            String outputFileName = inp.replace(".jack", "_MY.xml");
+            
+            CompilationEngine engine = new CompilationEngine(inp, outputFileName);
+            engine.compile();
+        }
         
-        System.out.println("Done");
+        //System.out.println("Done");
 
     }
 

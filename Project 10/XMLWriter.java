@@ -20,26 +20,32 @@ public class XMLWriter {
     }
 
 
-    public XMLWriter addElement(String elemName, String elemValue) {
+    public XMLWriter writeElement(String elemName, String elemValue) {
         addContext(elemName);
         setValue(elemValue);
+        closeTag();
         return this;
     }
 
-    public XMLWriter addElement(String elemName) {
+    public XMLWriter writeElement(String elemName) {
         addContext(elemName);
         newLine();
         return this;
     }
 
+    
+    public XMLWriter closeElement() {
+    	closeTagln();
+    	return this;
+    }
+    
     private void addContext(String elemName) {
         contexts.add(elemName);
         startTag();
     }
 
     private void setValue(String value) {
-        writer.printf(WHITE_SPACE + value + WHITE_SPACE);
-        closeTag();
+        writer.printf(encode(WHITE_SPACE + value + WHITE_SPACE));
     }
 
 
@@ -48,20 +54,36 @@ public class XMLWriter {
     }
 
     private void closeTag() {
-        write("</" + contexts.remove(contexts.size() - 1) + ">");
+        writer.printf("</" + contexts.get(contexts.size() - 1) + ">");
+        removeContext();
         newLine();
+    }
+    
+    private void closeTagln() {
+    	write("</" + contexts.get(contexts.size() - 1) + ">");
+    	removeContext();
+        newLine();
+    }
+    
+    private void removeContext() {
+    	contexts.remove(contexts.size() - 1);
     }
 
     private void closeAllTags() {
         int len = contexts.size();
         for(int i=0; i < len; i++) {
-            closeTag();
+            closeTagln();
         }
     }
 
     private void write(String text) {
-        for(int i=0; i < contexts.size() - 1; i++) writer.printf("\t");
+        for(int i=1; i <= contexts.size() - 1; i++) writer.printf("\t");
         writer.printf(text);
+    }
+    
+    private String encode(String text) {
+    	return text.replace(">", "&gt;")
+    				.replace("<", "&lt;");
     }
 
     private void newLine() {

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * Class generates tokens from the given jack file
@@ -48,30 +47,43 @@ class Tokenizer {
     public Tokenizer(String inputFileName) throws IOException {
         this.reader = new BufferedReader(new FileReader(inputFileName));
         this.tokens = new ArrayList<>();
-        this.writer = new XMLWriter(inputFileName.replaceAll(".jack", "T.xml")).addElement("tokens");
+        this.writer = new XMLWriter(inputFileName.replaceAll(".jack", "_MY_T.xml")).writeElement("tokens");
     }
 
+    
+    public void close() {
+    	writer.close();
+    }
 
-    private void tokenize() throws IOException {
+    private void tokenize() {
 
         if(tokens.isEmpty()) {
             
-            String line = reader.readLine();
+            try {
+				String line = reader.readLine();
 
-            while(line != null) {
+				while(line != null) {
 
-                line = line.replaceAll("//.*", EMPTY_STRING)    // remove line comments
-                            .replaceAll("/\\*(\\*(?!/)|[^*])*\\*/", EMPTY_STRING) // remove block comments
-                            .trim();    // remove extra spaces
+				    line = line.replaceAll("//.*", EMPTY_STRING)    // remove line comments
+				    	        .trim();    // remove extra spaces
+				    
+				    // remove block comments
+				    if(line.startsWith("/**") || line.startsWith("*")) {
+				    	line = EMPTY_STRING;
+				    }
 
-                if(!line.isEmpty()) {
-                	addTokensFrom(line);
-                	break;
+				    if(!line.isEmpty()) {
+				    	addTokensFrom(line);
+				    	break;
 
-                }
-                
-                line = reader.readLine();
-            }
+				    }
+				    
+				    line = reader.readLine();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
 
     }
@@ -84,32 +96,51 @@ class Tokenizer {
      */
     private void addTokensFrom(String line) {
 
+
+        // We shall be splitting by space to get tokens
+
+        // Strings inside " " will also be split by space which is not desirable
+        // Hence storing the string beforehand
+        List<String> stringConstants = new ArrayList<>();
+        
+    	Boolean insideString = false;
+    	String temp = EMPTY_STRING;
+        for(int i=0; i < line.length(); i++) {
+        	if(line.charAt(i) == '"') {
+        		if(insideString) {
+        			// end of string detected
+        			stringConstants.add("\"" + temp + "\"");
+            		temp = EMPTY_STRING;
+        		}
+    			insideString = !insideString;
+        	} else if(insideString) {
+        		temp += line.charAt(i);
+        	}
+        }
+
     	// add additional spaces before and after symbol (regardless of the spacing already exists or not)
         // this helps in tokenizing using spaces
         for(String symbol : SYMBOLS) {                  	
             line = line.replace(symbol, WHITE_SPACE + symbol + WHITE_SPACE);
         }
-        
+
         List<String> spaceSplitTokens = (Arrays.asList(line.split(WHITE_SPACE + "+")));
 
-        
-        String stringPattern = "\"[^\"]+\"";
-
-        
-        
-        
-        // By splitting by space, we made an error
-        // Strings inside " " will also be split which is not desirable
-        // Hence fixing this issue with this additional hassle
-        Boolean isString = false;
-        for(String spaceSplitToken : spaceSplitTokens) {
-        	if(spaceSplitToken.startsWith("\"")) {
-        		isString = true;
-        	} else if(spaceSplitToken.endsWith("\"")) {
-        		isString = false;
-        	} else if(!isString) {
-        		tokens.add(spaceSplitToken);
+        // now remove all the space split string constants
+        // and add the string constants saved earlier instead
+        int index = 0;	// index for string constants list
+        boolean skip = false;
+        for(String token : spaceSplitTokens) {
+        	
+        	if(token.startsWith("\"") || token.endsWith("\"")) {
+        		if(!skip) {
+        			tokens.add(stringConstants.get(index++));	
+        		}
+        		skip = !skip;
+        	} else if(!skip && !token.isEmpty()) {
+        		tokens.add(token);
         	}
+       	
         }
         
     }
@@ -118,7 +149,7 @@ class Tokenizer {
     /**
         Method returns true if there are more tokens to be produced
      */
-    public Boolean hasMoreTokens() throws IOException {
+    public Boolean hasMoreTokens() {
         tokenize();
         return tokens.size() > 0;
     }
@@ -139,13 +170,13 @@ class Tokenizer {
             currentToken = Token.Int_Const(token);
         }
         else if(token.startsWith("\"")) {
-            currentToken = Token.String_Const(token.replace("\"", EMPTY_STRING));
+            currentToken = Token.String_Const(token.replaceAll("\"", EMPTY_STRING));
         }
         else {
             currentToken = Token.Identifier(token);
         }
 
-        writer.addElement(currentToken.getType().toString(), token);
+        writer.writeElement(currentToken.getType().toString(), currentToken.getValue());
     }
 
     /**
@@ -155,11 +186,5 @@ class Tokenizer {
         return currentToken;
     }
 
-
-
-    public void save() throws IOException {
-        this.writer.close();
-        this.reader.close();
-    }
 
 }
