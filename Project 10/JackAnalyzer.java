@@ -38,7 +38,7 @@ class JackAnalyzer {
 
         for(String inp : inputFileNames) {
 
-            String outputFileName = inp.replace(".jack", "_MY.xml");
+            String outputFileName = inp.replace(".jack", ".xml");
             
             CompilationEngine engine = new CompilationEngine(inp, outputFileName);
             engine.compile();

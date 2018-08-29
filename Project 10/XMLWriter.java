@@ -82,8 +82,10 @@ public class XMLWriter {
     }
     
     private String encode(String text) {
-    	return text.replace(">", "&gt;")
+    	return text.replace("&", "&amp;")
+    				.replace(">", "&gt;")
     				.replace("<", "&lt;");
+    				
     }
 
     private void newLine() {
