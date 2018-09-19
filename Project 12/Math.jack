@@ -1,0 +1,171 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A library of commonly used mathematical functions.
+ * Note: Jack compilers implement multiplication and division using OS method calls.
+ */
+class Math {
+
+    static int WORD_SIZE;
+    static Array twoToThe;
+
+    /** Initializes the library. */
+    function void init() {
+        var int i;
+
+        let i=1;
+        let WORD_SIZE = 16;
+        let twoToThe = Array.new(WORD_SIZE);
+
+        // populate twoToThe
+        let twoToThe[0] = 1;
+        while(i < WORD_SIZE) {
+            let twoToThe[i] = twoToThe[i-1] + twoToThe[i-1];
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        if(x < 0) {
+            return (0-x);
+        }
+        return x;
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x*y and multiply(x,y) return the same value.
+     */
+    function int multiply(int x, int y) {
+        var int sum;
+        var int shiftedX;
+        var int i;
+
+        let sum=0;
+        let shiftedX=x;
+        let i=0;
+
+        while(i < WORD_SIZE) {
+
+            if(Math.bit(y, i)) {
+                let sum = sum + shiftedX;
+            }
+
+            let shiftedX = shiftedX + shiftedX;   // left shift
+            let i = i + 1;
+        }
+
+        return sum;
+    }
+
+    /** Returns the integer part of x/y.
+     *  When a Jack compiler detects the multiplication operator '/' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x/y and divide(x,y) return the same value.
+     */
+    function int divide(int x, int y) {
+        var int sign;
+        var int result;
+
+        let sign = 0;
+
+        if(x < 0) {
+            let sign = ~sign;
+        }
+        if(y < 0) {
+            let sign = ~sign;
+        }
+
+        let result = Math.divideAbs(Math.abs(x), Math.abs(y));
+
+        if(sign < 0) {
+            // neg result
+            let result = 0 - result;
+        }
+
+        return result;
+    }
+
+    /** PRIVATE METHOD | Divides only positive values */
+    function int divideAbs(int x, int y) {
+        var int q;
+        var int qTimes2;
+
+        if(y > x) {
+            return 0;
+        }
+
+        if(y < 0) {
+            return 0;
+        }
+
+        let q = Math.divideAbs(x, (y+y));
+        let qTimes2 = q + q;
+
+
+        if((x - (qTimes2 * y)) < y) {
+            return qTimes2;
+        }
+
+        return qTimes2 + 1;
+    }
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+        var int i;
+        var int result, temp, tempPower2;
+
+        let i=WORD_SIZE/2 - 1;
+        let result=0;
+
+        while(~(i < 0)) {
+            let temp = result + twoToThe[i];
+            if(temp < x) {
+                let tempPower2 = temp * temp;
+
+                if(tempPower2 > 0) {
+                    if(tempPower2 = x) {
+                        return temp;
+                    }
+                    else {
+                        if(tempPower2 < x) {
+                            let result = temp;
+                        }
+                    }
+                }
+
+            }
+            let i = i - 1;
+        }
+
+        return result;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+        if(a < b) {
+            return b;
+        }
+        return a;
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+        if(a > b) {
+            return b;
+        }
+        return a;
+    }
+
+    /** PRIVATE METHOD | returns true if the ith bit of n is 1 else returns false */
+    function boolean bit(int n, int i) {
+        return ~((twoToThe[i] & n) = 0);
+    }
+}

@@ -12,3 +12,11 @@
 /Token.class
 /Tokenizer.class
 /XMLWriter.class
+/JackCompiler$1.class
+/JackCompiler.class
+/SymbolTableGenerator.class
+/SymbolTableGenerator$SymbolTableEntry.class
+/VMWriter.class
+/Stack.class
+/VMWriter$LabelGenerator.class
+/VMWriter$UniqueLabelGenerator.class

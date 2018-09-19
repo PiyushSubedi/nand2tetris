@@ -1,0 +1,296 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/TWO_TO_THE.jack
+
+/**
+ * A library of functions for displaying graphics on the TWO_TO_THE.
+ * The Hack physical TWO_TO_THE consists of 512 rows (indexed 0..511, top to bottom)
+ * of 256 pixels each (indexed 0..255, left to right). The top left pixel on 
+ * the TWO_TO_THE is indexed (0,0).
+ */
+class Screen {
+
+    static Array TWO_TO_THE;
+    static int SCREEN_BASE_ADDR;
+    static boolean COLOR;
+
+    /** Initializes the TWO_TO_THE. */
+    function void init() {
+        var int i;
+
+        let SCREEN_BASE_ADDR = 16384;
+        let COLOR = true;
+
+        let TWO_TO_THE = Array.new(17);
+        let TWO_TO_THE[0] = 1;
+        while(i < 16) {
+            let i = i + 1;
+            let TWO_TO_THE[i] = TWO_TO_THE[i - 1] + TWO_TO_THE[i - 1];
+        }
+
+        return;
+    }
+
+    /** Erases the entire screen. */
+    function void clearScreen() {
+        var int i;
+
+        while(i < 8192) {
+            let SCREEN_BASE_ADDR[i] = 0;
+            let i = i + 1;
+        }
+
+        return;
+    }
+
+
+
+    /** PRIVATE METHOD */
+    function void updateLocation(int addr, int val) {
+        if(COLOR) {
+            let SCREEN_BASE_ADDR[addr] = SCREEN_BASE_ADDR[addr] | val;
+        } else {
+            let SCREEN_BASE_ADDR[addr] = SCREEN_BASE_ADDR[addr] & (~val);
+        }
+
+        return;
+    }
+
+
+    /** Sets the current color, to be used for all subsequent drawXXX commands.
+     *  Black is represented by true, white by false. */
+    function void setColor(boolean b) {
+        let COLOR = b;
+        return;
+    }
+
+
+
+    /** Draws the (x,y) pixel, using the current color. */
+    function void drawPixel(int x, int y) {
+        var int xScr, xMod, addr;
+
+        if((x < 0) | (x > 511) | (y < 0) | (y > 255)) {
+            do Sys.error(7);
+        }
+
+        let xScr = x/16;
+        let xMod = x - (xScr * 16);
+
+        let addr = y*32 + xScr;
+        do Screen.updateLocation(addr, TWO_TO_THE[xMod]);
+
+        return;
+    }
+
+    function void drawConditional(int x, int y, boolean drawStraight) {
+        if(drawStraight) {
+            do Screen.drawPixel(y,x);
+        } else {
+            do Screen.drawPixel(x,y);
+        }
+
+        return;
+    }
+
+    /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+        var int i, start, yDist, xDist, temp, diff;
+        var boolean goingUp, north;
+        var int end, yDistTimes2, diffTimes2;
+
+        if((x1 < 0) | (x2 > 511) | (y1 < 0) | (y2 > 255)) {
+            do Sys.error(8);
+        }
+
+        let xDist = Math.abs(x2 - x1);
+        let yDist = Math.abs(y2 - y1);
+
+        let goingUp = xDist < yDist;
+
+        if( (goingUp & (y2 < y1)) | (~goingUp & (x2 < x1)) ) {
+            // swap
+            let temp = x1;
+            let x1 = x2;
+            let x2 = temp;
+
+            let temp = y1;
+            let y1 = y2;
+            let y2 = temp;
+        }
+
+        if(goingUp) {
+            let temp = xDist;
+            let xDist = yDist;
+            let yDist = temp;
+
+            let start = y1;
+            let i=x1;
+            let end = y2;
+
+            let north = x1 > x2;
+        } else {
+            let start = x1;
+            let i = y1;
+            let end = x2;
+
+            let north = y1 > y2;
+        }
+
+        let diff = 2*yDist - xDist;
+        let yDistTimes2 = 2*yDist;
+        let diffTimes2 = 2*(yDist - xDist);
+
+        do Screen.drawConditional(start, i, goingUp);
+
+        while(start < end) {
+            if(diff < 0) {
+                let diff = diff + yDistTimes2;
+            } else {
+                let diff = diff + diffTimes2;
+                if(north) {
+                    let i = i - 1;
+                } else {
+                    let i = i + 1;
+                }
+            }
+
+            let start = start + 1;
+            do Screen.drawConditional(start, i, goingUp);
+        }
+
+        return;
+    }
+
+    /** Draws a filled rectangle whose top left corner is (x1, y1)
+     * and bottom right corner is (x2,y2), using the current color. */
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+        var int addr, sum, diffX, x1By16, x2By16, valX2Mod, notX1Mod, x1Mod, x2Mod;
+
+        if((x1 > x2) | (y1 > y2) | (x1 < 0) | (x2 > 511) | (y1 < 0) | (y2 > 255)) {
+            do Sys.error(9);
+        }
+
+        let x1By16 = x1/16;
+        let x1Mod = x1 - (x1By16 * 16);
+
+        let x2By16 = x2/16;
+        let x2Mod = x2 - (x2By16 * 16);
+
+        let notX1Mod = ~(TWO_TO_THE[x1Mod] - 1);
+        let valX2Mod = TWO_TO_THE[x2Mod + 1] - 1;
+
+        let addr = (y1 * 32) + x1By16;
+        let diffX = x2By16 - x1By16;
+
+        while(~(y1 > y2)) {
+            let sum = addr + diffX;
+            if(diffX = 0) {
+                do Screen.updateLocation(addr, valX2Mod & notX1Mod);
+            } else {
+                do Screen.updateLocation(addr, notX1Mod);
+
+                let addr = addr + 1;
+                while(addr < sum) {
+                    do Screen.updateLocation(addr, -1);
+                    let addr = addr + 1;
+                }
+                do Screen.updateLocation(sum, valX2Mod);
+            }
+
+            let y1 = y1 + 1;
+            let addr = sum + 32 - diffX;
+        }
+
+        return;
+    }
+
+
+    function void drawHorizontal(int x1, int y1, int x2) {
+
+        var int addr,min1By16,max1By16,sum,max1Bit,min1Bit,diff,min1,max1,min1Mod,max1Mod;
+
+        let min1 = Math.min(y1, x2);
+        let max1 = Math.max(y1, x2);
+
+        if((x1 > -1) & (x1 < 256) & (min1 < 512) & (max1 > -1)) {
+
+            let min1 = Math.max(min1, 0);
+            let max1 = Math.min(max1, 511);
+
+            let min1By16 = min1/16;
+            let min1Mod = min1 - (min1By16*16);
+
+            let max1By16 = max1/16;
+            let max1Mod = max1 - (max1By16*16);
+
+            let min1Bit = ~(TWO_TO_THE[min1Mod] - 1);
+            let max1Bit = TWO_TO_THE[max1Mod + 1] - 1;
+
+            let addr = x1*32 + min1By16;
+            let diff = max1By16 - min1By16;
+            let sum = addr + diff;
+
+            if(diff = 0) {
+                do Screen.updateLocation(addr, max1Bit & min1Bit);
+            } else {
+                do Screen.updateLocation(addr, min1Bit);
+                let addr = addr + 1;
+
+                while(addr < sum) {
+                    do Screen.updateLocation(addr, -1);
+                    let addr = addr + 1;
+                }
+                do Screen.updateLocation(sum, max1Bit);
+
+            }
+        }
+
+        return;
+    }
+
+    function void drawSymetric(int x, int y, int xEnd, int yEnd) {
+        do Screen.drawHorizontal(y - yEnd, x + xEnd, x - xEnd);
+        do Screen.drawHorizontal(y + yEnd, x + xEnd, x - xEnd);
+        do Screen.drawHorizontal(y - xEnd, x - yEnd, x + yEnd);
+        do Screen.drawHorizontal(y + xEnd, x - yEnd, x + yEnd);
+        return;
+    }
+
+
+    /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
+    function void drawCircle(int x, int y, int r) {
+
+        var int i,rTemp,oneMinusR;
+
+        if((x < 0) | (x > 511) | (y < 0) | (y > 255)) {
+            do Sys.error(12);
+        }
+
+        if( (x - r < 0) | (x + r > 511) | (y - r < 0) | (y + r > 255) ) {
+            do Sys.error(13);
+        }
+
+
+        let rTemp = r;
+        let oneMinusR = 1 - r;
+
+
+        do Screen.drawSymetric(x, y, i, rTemp);
+
+        while(rTemp > i) {
+            if(oneMinusR < 0) {
+                let oneMinusR = oneMinusR + (2*i) + 3;
+            } else {
+                let oneMinusR = oneMinusR + (2*(i - rTemp)) + 5;
+                let rTemp = rTemp - 1;
+            }
+
+            let i = i + 1;
+            do Screen.drawSymetric(x, y, i, rTemp);
+        }
+
+        return;
+    }
+}
